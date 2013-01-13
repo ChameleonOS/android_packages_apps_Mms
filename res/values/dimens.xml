@@ -2,9 +2,22 @@
 <!-- Copyright 2011 Google Inc.
 All Rights Reserved. -->
 <resources>
+    <dimen name="text_font_size_huge">18.0sp</dimen>
+    <dimen name="text_font_size_large">16.0sp</dimen>
+    <dimen name="text_font_size_medium">14.0sp</dimen>
+    <dimen name="text_font_size_small">12.0sp</dimen>
+    <dimen name="text_font_size_tiny">10.0sp</dimen>
+
+    <dimen name="conversation_list_item_primary_font_size">@dimen/text_font_size_huge</dimen>
+    <dimen name="conversation_list_item_secondary_font_size">@dimen/text_font_size_small</dimen>
+
     <dimen name="message_item_avatar_on_right_text_indent">50dip</dimen>
-    <dimen name="message_item_text_padding_left_right">12dip</dimen>
+    <dimen name="message_item_text_padding_left_right">4dip</dimen>
     <dimen name="message_item_text_padding_top">5dip</dimen>
+    <dimen name="message_bubble_padding_left_right">40dip</dimen>
+    <dimen name="message_text_size">@dimen/text_font_size_large</dimen>
+    <dimen name="message_body_font_size">@dimen/text_font_size_large</dimen>
+    <dimen name="message_body_secondary_font_size">@dimen/text_font_size_small</dimen>
 
     <dimen name="avatar_width_height">64dip</dimen>
 

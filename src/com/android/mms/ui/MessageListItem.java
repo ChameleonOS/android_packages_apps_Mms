@@ -258,7 +258,7 @@ public class MessageListItem extends LinearLayout implements
         mLockedIndicator.setVisibility(View.GONE);
         mDeliveredIndicator.setVisibility(View.GONE);
         mDetailsIndicator.setVisibility(View.GONE);
-        updateAvatarView(mMessageItem.mAddress, false);
+        //updateAvatarView(mMessageItem.mAddress, false);
     }
 
     private String buildTimestampLine(String timestamp) {
@@ -320,7 +320,7 @@ public class MessageListItem extends LinearLayout implements
         if (!sameItem || haveLoadedPdu) {
             boolean isSelf = Sms.isOutgoingFolder(mMessageItem.mBoxId);
             String addr = isSelf ? null : mMessageItem.mAddress;
-            updateAvatarView(addr, isSelf);
+            //updateAvatarView(addr, isSelf);
         }
 
         // Get and/or lazily set the formatted message from/on the

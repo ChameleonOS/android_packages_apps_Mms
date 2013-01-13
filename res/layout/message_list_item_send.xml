@@ -21,50 +21,41 @@
 <com.android.mms.ui.MessageListItem
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/msg_list_item_send"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    >
 
     <LinearLayout android:id="@+id/mms_layout_view_parent"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/message_bubble_padding_left_right"
+        android:background="@drawable/message_bubble_out_bg"
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <view xmlns:android="http://schemas.android.com/apk/res/android"
-                class="com.android.mms.ui.QuickContactDivot"
-                android:id="@+id/avatar"
-                position="left_upper"
-                android:layout_alignParentRight="true"
-                android:layout_width="@dimen/avatar_width_height"
-                android:layout_height="@dimen/avatar_width_height" />
+            android:layout_height="wrap_content" >
 
             <LinearLayout
                 android:id="@+id/message_block"
-                android:minHeight="@dimen/avatar_width_height"
-                android:layout_width="0dip"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/avatar"
-                android:layout_alignParentLeft="true"
-                android:background="@drawable/hairline_right"
+                android:layout_alignParentRight="true"
                 android:orientation="vertical" >
 
                 <TextView android:id="@+id/text_view"
+                    style="@style/TextAppearance.MessageBody.Bubble"
                     android:autoLink="all"
                     android:paddingLeft="@dimen/message_item_text_padding_left_right"
                     android:paddingRight="@dimen/message_item_text_padding_left_right"
                     android:paddingTop="@dimen/message_item_text_padding_top"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:linksClickable="false"
                     android:gravity="right"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/message_sent"
-                    android:textSize="16sp" />
+                    />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -99,11 +90,10 @@
                         android:visibility="gone" />
 
                     <TextView android:id="@+id/date_view"
-                        android:background="@drawable/listitem_background"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textColor="@color/text_hairline" />
+                        android:textColor="@color/timestamp_color" />
                 </LinearLayout>
 
                 <ViewStub android:id="@+id/mms_layout_view_stub"

@@ -26,13 +26,37 @@
     <drawable name="text_color_black">#ff000000</drawable>
     <color name="text_hairline">#ffcccccc</color>
     <color name="message_count_color">#66333333</color>
+    <color name="text_color_highlight">#FFFF9200</color>
+    <color name="text_color_link">#5C5CFF</color>
+    <color name="text_color_hint">?android:textColorHint</color>
+    <color name="text_color_primary">#ffffffff</color>
+    <color name="text_color_primary_shadow">#80ffffff</color>
+    <color name="text_color_secondary">#ffeeeeee</color>
+    <color name="text_color_secondary_shadow">#80ffffff</color>
+    <color name="text_color_primary_inverse">@android:color/black</color>
+    <color name="text_color_secondary_inverse">@android:color/black</color>
+    <color name="message_body_link_text_color">@color/text_color_link</color>
+    <color name="message_bubble_body_text_color">#ff000000</color>
+    <color name="message_bubble_body_text_shadow_color">@color/text_color_primary_shadow</color>
+    <color name="message_list_body_text_color">@color/text_color_primary</color>
+    <color name="message_list_body_text_shadow_color">@color/text_color_primary_shadow</color>
+    <color name="message_body_mms_text_color">@color/text_color_primary</color>
+    <color name="message_body_mms_text_shadow_color">@color/text_color_primary_shadow</color>
+    <color name="conversation_list_item_primary_text_color">@color/text_color_primary_inverse</color>
+    <color name="conversation_list_item_secondary_text_color">@color/text_color_secondary_inverse</color>
+    <color name="conversation_list_item_text_shadow_color">@color/text_color_primary_shadow</color>
+    <color name="conversation_title_primary_text_color">@color/text_color_primary</color>
+    <color name="conversation_title_secondary_text_color">@color/text_color_secondary</color>
+    <color name="conversation_title_text_shadow_color">@color/text_color_primary_shadow</color>
+    <color name="conversation_unread_text_color">@color/text_color_highlight</color>
 
     <!-- Chat "sent time" text background -->
     <color name="timestamp_color">#bf000000</color>
 
     <!-- the background color used for unread conversation -->
-    <color name="unread_bgcolor">#ffffffff</color>
-    <color name="read_bgcolor">#ffeeeeee</color>
+    <color name="unread_bgcolor">#ffcccccc</color>
+    <color name="read_bgcolor">#ffffffff</color>
+    <color name="read_bgcolor_dark">#ff000000</color>
 
     <color name="widget_sender_text_color_read">#555555</color>
     <color name="widget_sender_text_color_unread">#333333</color>
@@ -43,9 +67,10 @@
     <color name="action_bar_button_text_color">#FFFFFF</color>
 
     <!-- New text colors from layouts to make theme chooser apk easier to theme -->
-    <color name="compose_message_edit_text">#000000</color>
+    <color name="compose_message_edit_text">@color/text_color_primary_inverse</color>
     <color name="compose_message_text_counter">#cc333333</color>
     <color name="actionbar_text">#ccffffff</color>
+    <color name="actionbar_text_dark">#cc000000</color>
     <color name="delete_thread_dialog">#000000</color>
     <color name="delivery_report_header">#ffffff</color>
     <color name="delivery_report_recipient">#000000</color>
@@ -58,7 +83,8 @@
     <color name="widget_loading">#000000</color>
 
     <!-- New Background colors from layouts to make theme chooser apk easier to theme -->
-    <color name="background">#ffffff</color>
+    <color name="background">@color/transparent</color>
+    <color name="background_dark">#000000</color>
     <color name="darkgray_backgrounds">#888888</color>
     <color name="quickmessage_body_dark_bg">#ff1e1e1e</color>
     <color name="quickmessage_body_light_bg">#fff3f3f3</color>

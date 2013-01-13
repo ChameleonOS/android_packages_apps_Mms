@@ -136,6 +136,8 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
         if (mConversation.hasUnreadMessages()) {
             buf.setSpan(STYLE_BOLD, 0, buf.length(),
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            buf.setSpan(new TextAppearanceSpan(mContext, R.style.TextAppearance_ConversationListItem_Primary_Unread),
+                    0, buf.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         }
         return buf;
     }
@@ -236,7 +238,7 @@ public class ConversationListItem extends RelativeLayout implements Contact.Upda
     private void updateBackground() {
         int backgroundId;
         if (mConversation.isChecked()) {
-            backgroundId = R.drawable.list_selected_holo_light;
+            backgroundId = R.drawable.list_selected_holo;
         } else if (mConversation.hasUnreadMessages()) {
             backgroundId = R.drawable.conversation_item_background_unread;
         } else {

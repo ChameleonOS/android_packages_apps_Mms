@@ -58,6 +58,8 @@ import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.gesture.Prediction;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -1908,6 +1910,7 @@ public class ComposeMessageActivity extends Activity
         String title = null;
         String subTitle = null;
         int cnt = list.size();
+        Drawable avatarDrawable = getResources().getDrawable(R.drawable.ic_contact_picture);;
         switch (cnt) {
             case 0: {
                 String recipient = null;
@@ -1925,6 +1928,7 @@ public class ComposeMessageActivity extends Activity
                     subTitle = PhoneNumberUtils.formatNumber(number, number,
                             MmsApp.getApplication().getCurrentCountryIso());
                 }
+                avatarDrawable = list.get(0).getAvatar(this, avatarDrawable);
                 break;
             }
             default: {
@@ -1939,6 +1943,15 @@ public class ComposeMessageActivity extends Activity
         ActionBar actionBar = getActionBar();
         actionBar.setTitle(title);
         actionBar.setSubtitle(subTitle);
+        actionBar.setLogo(scaleAvatar(avatarDrawable));
+    }
+
+    private Drawable scaleAvatar(Drawable avatar) {
+        if (avatar == null)
+            return avatar;
+        Bitmap bmp = ((BitmapDrawable)avatar).getBitmap();
+        int avatarSize = getResources().getDimensionPixelSize(R.dimen.avatar_width_height);
+        return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bmp, avatarSize, avatarSize, true));
     }
 
     // Get the recipients editor ready to be displayed onscreen.
@@ -4630,6 +4643,20 @@ public class ComposeMessageActivity extends Activity
         editText.setText("");
 
         mEmojiDialog.show();
+    }
+
+    /**
+     * If emojis are enabled we will show the emoji dialog, otherwise show the smiley dialog
+     * @param v
+     */
+    public void insertEmoji(View v) {
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences((Context) ComposeMessageActivity.this);
+        boolean enableEmojis = prefs.getBoolean(MessagingPreferenceActivity.ENABLE_EMOJIS, false);
+        if (enableEmojis)
+            showEmojiDialog();
+        else
+            showSmileyDialog();
     }
 
     @Override
