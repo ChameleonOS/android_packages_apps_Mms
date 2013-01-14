@@ -89,18 +89,25 @@
                         android:src="@drawable/ic_sms_mms_details"
                         android:visibility="gone" />
 
-                    <TextView android:id="@+id/date_view"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:textColor="@color/timestamp_color" />
                 </LinearLayout>
-
-                <ViewStub android:id="@+id/mms_layout_view_stub"
-                    android:layout="@layout/mms_layout_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
             </LinearLayout>
+
+            <TextView android:id="@+id/date_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/timestamp_color"
+                android:paddingRight="@dimen/message_item_text_padding_left_right"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/message_block" />
+
+            <ViewStub android:id="@+id/mms_layout_view_stub"
+                android:layout="@layout/mms_layout_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/date_view"
+                android:layout_alignParentRight="true"  />
+
         </RelativeLayout>
     </LinearLayout>
 
