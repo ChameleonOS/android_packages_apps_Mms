@@ -22,7 +22,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/conversation_bg" >
+    android:background="@drawable/conversation_list_bg" >
 
     <LinearLayout
         android:id="@+id/recipients_subject_linear"
