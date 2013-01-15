@@ -52,12 +52,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.android.mms.MmsApp;
 import com.android.mms.R;
@@ -500,6 +495,12 @@ public class MessageListItem extends LinearLayout implements
             }
             mMmsView.setVisibility(visible ? View.VISIBLE : View.GONE);
             mImageView.setVisibility(visible ? View.VISIBLE : View.GONE);
+        }
+
+        if (visible) {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)mMessageBlock.getLayoutParams();
+            params.width = LayoutParams.MATCH_PARENT;
+            mMessageBlock.setLayoutParams(params);
         }
     }
 
