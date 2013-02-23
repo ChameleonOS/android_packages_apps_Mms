@@ -33,9 +33,9 @@
     <color name="text_color_primary_shadow">#80ffffff</color>
     <color name="text_color_secondary">#ffeeeeee</color>
     <color name="text_color_secondary_shadow">#80ffffff</color>
-    <color name="text_color_primary_inverse">@android:color/black</color>
-    <color name="text_color_secondary_inverse">@android:color/black</color>
-    <color name="message_body_link_text_color">@color/text_color_link</color>
+    <color name="text_color_primary_inverse">#ffffff</color>
+    <color name="text_color_secondary_inverse">#ffffff</color>
+    <color name="message_body_link_text_color">#5C5CFF</color>
     <color name="message_bubble_body_text_color">#ff000000</color>
     <color name="message_bubble_body_text_shadow_color">@color/text_color_primary_shadow</color>
     <color name="message_list_body_text_color">@color/text_color_primary</color>
