@@ -283,7 +283,8 @@ public class MessagingNotification {
                                 "sCurrentlyDisplayedThreadId so NOT showing notification," +
                                 " but playing soft sound. threadId: " + newMsgThreadId);
                     }
-                    playInConversationNotificationSound(context);
+                    NotificationInfo ni = (NotificationInfo)notificationSet.first();
+                    playInConversationNotificationSound(context, ni.mSender.getCustomNotification());
                     return;
                 }
             }
@@ -307,6 +308,25 @@ public class MessagingNotification {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         String ringtoneStr = sp.getString(MessagingPreferenceActivity.NOTIFICATION_RINGTONE,
                 null);
+        if (TextUtils.isEmpty(ringtoneStr)) {
+            // Nothing to play
+            return;
+        }
+        Uri ringtoneUri = Uri.parse(ringtoneStr);
+        NotificationPlayer player = new NotificationPlayer(LogTag.APP);
+        player.play(context, ringtoneUri, false, AudioManager.STREAM_NOTIFICATION,
+                IN_CONVERSATION_NOTIFICATION_VOLUME);
+    }
+
+    /**
+     * Play the in-conversation notification sound (it's the regular notification sound, but
+     * played at half-volume
+     */
+    private static void playInConversationNotificationSound(Context context,
+            String customNotification) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        String ringtoneStr = customNotification == null ? sp.getString(MessagingPreferenceActivity.NOTIFICATION_RINGTONE,
+                null) : customNotification;
         if (TextUtils.isEmpty(ringtoneStr)) {
             // Nothing to play
             return;
@@ -887,6 +907,8 @@ public class MessagingNotification {
         final Resources res = context.getResources();
         String title = null;
         Bitmap avatar = null;
+        String customNotification = null;
+
         if (uniqueThreadCount > 1) {    // messages from multiple threads
             Intent mainActivityIntent = new Intent(Intent.ACTION_MAIN);
 
@@ -899,6 +921,7 @@ public class MessagingNotification {
             title = context.getString(R.string.message_count_notification, messageCount);
         } else {    // same thread, single or multiple messages
             title = mostRecentNotification.mTitle;
+            customNotification = mostRecentNotification.mSender.getCustomNotification();
             BitmapDrawable contactDrawable = (BitmapDrawable)mostRecentNotification.mSender
                     .getAvatar(context, null);
             if (contactDrawable != null) {
@@ -978,8 +1001,8 @@ public class MessagingNotification {
                         }
             }
 
-            String ringtoneStr = sp.getString(MessagingPreferenceActivity.NOTIFICATION_RINGTONE,
-                    null);
+            String ringtoneStr = customNotification == null ? sp.getString(MessagingPreferenceActivity.NOTIFICATION_RINGTONE,
+                    null) : customNotification;
             noti.setSound(TextUtils.isEmpty(ringtoneStr) ? null : Uri.parse(ringtoneStr));
             if (DEBUG) {
                 Log.d(TAG, "updateNotification: new message, adding sound to the notification");
