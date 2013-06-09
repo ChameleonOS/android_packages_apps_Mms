@@ -90,4 +90,8 @@
     <color name="quickmessage_body_light_bg">#fff3f3f3</color>
     <color name="dividers">#eeeeee</color>
     <color name="transparent">#00000000</color>
+
+    <!-- Sliding panel colors -->
+    <color name="slider_fade_color">#0033b5e5</color>
+    <color name="covered_fade_color">#00ffffff</color>
 </resources>

@@ -101,6 +101,9 @@ public class MessagingPreferenceActivity extends PreferenceActivity
     public static final String QM_CLOSE_ALL_ENABLED      = "pref_key_close_all";
     public static final String QM_DARK_THEME_ENABLED     = "pref_dark_theme";
 
+    // Autosave drafts
+    public static final String AUTOSAVE_DRAFTS = "pref_key_mms_autosave_drafts";
+
     // Menu entries
     private static final int MENU_RESTORE_DEFAULTS    = 1;
 
@@ -570,6 +573,13 @@ public class MessagingPreferenceActivity extends PreferenceActivity
         boolean qmDarkThemeEnabled =
             prefs.getBoolean(MessagingPreferenceActivity.QM_DARK_THEME_ENABLED, false);
         return qmDarkThemeEnabled;
+    }
+
+    public static boolean getAutosaveDrafts(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean autosave =
+                prefs.getBoolean(MessagingPreferenceActivity.AUTOSAVE_DRAFTS, true);
+        return autosave;
     }
 
     private void registerListeners() {

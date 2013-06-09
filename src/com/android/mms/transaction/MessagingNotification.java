@@ -73,9 +73,12 @@ import com.android.mms.model.SlideshowModel;
 import com.android.mms.quickmessage.QmMarkRead;
 import com.android.mms.quickmessage.QuickMessagePopup;
 import com.android.mms.ui.ComposeMessageActivity;
+import com.android.mms.ui.ComposeMessageFragment;
 import com.android.mms.ui.ConversationList;
+import com.android.mms.ui.ConversationListFragment;
 import com.android.mms.ui.MessageUtils;
 import com.android.mms.ui.MessagingPreferenceActivity;
+import com.android.mms.ui.MmsActivity;
 import com.android.mms.util.AddressUtils;
 import com.android.mms.util.DownloadManager;
 import com.android.mms.widget.MmsWidgetProvider;
@@ -815,7 +818,7 @@ public class MessagingNotification {
             Bitmap attachmentBitmap,
             Contact contact,
             int attachmentType) {
-        Intent clickIntent = ComposeMessageActivity.createIntent(context, threadId);
+        Intent clickIntent = MmsActivity.createIntent(context, threadId);
         clickIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -944,7 +947,7 @@ public class MessagingNotification {
                 }
             }
 
-            taskStackBuilder.addParentStack(ComposeMessageActivity.class);
+            taskStackBuilder.addParentStack(MmsActivity.class);
             taskStackBuilder.addNextIntent(mostRecentNotification.mClickIntent);
         }
         // Always have to set the small icon or the notification is ignored
@@ -1170,7 +1173,7 @@ public class MessagingNotification {
         // But don't show the QuickMessage if the user is in a call or the phone is ringing
         if (qmPopupEnabled && qmIntent != null) {
             TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            if (tm.getCallState() == TelephonyManager.CALL_STATE_IDLE && !ConversationList.mIsRunning && !ComposeMessageActivity.mIsRunning) {
+            if (tm.getCallState() == TelephonyManager.CALL_STATE_IDLE && !ConversationListFragment.mIsRunning && !ComposeMessageFragment.mIsRunning) {
                 // Since a QM Popup may wake and unlock we need to prevent the light from being dismissed
                 notification.flags |= Notification.FLAG_FORCE_LED_SCREEN_OFF;
 
@@ -1273,7 +1276,7 @@ public class MessagingNotification {
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         if (allFailedInSameThread) {
-            failedIntent = new Intent(context, ComposeMessageActivity.class);
+            failedIntent = new Intent(context, MmsActivity.class);
             if (isDownload) {
                 // When isDownload is true, the valid threadId is passed into this function.
                 failedIntent.putExtra("failed_download_flag", true);
@@ -1282,7 +1285,7 @@ public class MessagingNotification {
                 failedIntent.putExtra("undelivered_flag", true);
             }
             failedIntent.putExtra("thread_id", threadId);
-            taskStackBuilder.addParentStack(ComposeMessageActivity.class);
+            taskStackBuilder.addParentStack(MmsActivity.class);
         } else {
             failedIntent = new Intent(context, ConversationList.class);
         }

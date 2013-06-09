@@ -35,4 +35,6 @@ All Rights Reserved. -->
     <dimen name="qm_message_height">205dp</dimen>
     <dimen name="qm_dialog_button_bar_height">48dip</dimen>
 
+    <dimen name="pane_parallax">100dp</dimen>
+
 </resources>

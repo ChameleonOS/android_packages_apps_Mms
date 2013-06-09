@@ -210,6 +210,12 @@
     <!-- Extra Settings -->
     <PreferenceCategory android:title="@string/pref_extra_settings">
         <CheckBoxPreference
+            android:key="pref_key_mms_autosave_drafts"
+            android:title="@string/pref_autosave_drafts_title"
+            android:summary="@string/pref_autosave_drafts_summary"
+            android:defaultValue="true" />
+
+        <CheckBoxPreference
             android:key="pref_key_strip_unicode"
             android:title="@string/pref_title_strip_unicode"
             android:summary="@string/pref_summary_strip_unicode"

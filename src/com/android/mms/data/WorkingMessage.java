@@ -201,10 +201,10 @@ public class WorkingMessage {
         void onAttachmentError(int error);
     }
 
-    private WorkingMessage(ComposeMessageActivity activity) {
+    private WorkingMessage(Activity activity, MessageStatusListener listener) {
         mActivity = activity;
         mContentResolver = mActivity.getContentResolver();
-        mStatusListener = activity;
+        mStatusListener = listener;
         mAttachmentType = TEXT;
         mText = "";
     }
@@ -212,9 +212,9 @@ public class WorkingMessage {
     /**
      * Creates a new working message.
      */
-    public static WorkingMessage createEmpty(ComposeMessageActivity activity) {
+    public static WorkingMessage createEmpty(Activity activity, MessageStatusListener listener) {
         // Make a new empty working message.
-        WorkingMessage msg = new WorkingMessage(activity);
+        WorkingMessage msg = new WorkingMessage(activity, listener);
         return msg;
     }
 
@@ -222,7 +222,7 @@ public class WorkingMessage {
      * Create a new WorkingMessage from the specified data URI, which typically
      * contains an MMS message.
      */
-    public static WorkingMessage load(ComposeMessageActivity activity, Uri uri) {
+    public static WorkingMessage load(Activity activity, MessageStatusListener listener, Uri uri) {
         // If the message is not already in the draft box, move it there.
         if (!uri.toString().startsWith(Mms.Draft.CONTENT_URI.toString())) {
             PduPersister persister = PduPersister.getPduPersister(activity);
@@ -237,7 +237,7 @@ public class WorkingMessage {
             }
         }
 
-        WorkingMessage msg = new WorkingMessage(activity);
+        WorkingMessage msg = new WorkingMessage(activity, listener);
         if (msg.loadFromUri(uri)) {
             msg.mHasMmsDraft = true;
             return msg;
@@ -291,12 +291,13 @@ public class WorkingMessage {
      * Load the draft message for the specified conversation, or a new empty message if
      * none exists.
      */
-    public static WorkingMessage loadDraft(ComposeMessageActivity activity,
+    public static WorkingMessage loadDraft(Activity activity,
+                                           MessageStatusListener listener,
                                            final Conversation conv,
                                            final Runnable onDraftLoaded) {
         if (Log.isLoggable(LogTag.APP, Log.VERBOSE)) LogTag.debug("loadDraft %s", conv);
 
-        final WorkingMessage msg = createEmpty(activity);
+        final WorkingMessage msg = createEmpty(activity, listener);
         if (conv.getThreadId() <= 0) {
             if (onDraftLoaded != null) {
                 onDraftLoaded.run();
@@ -1800,7 +1801,7 @@ public class WorkingMessage {
     private void asyncDeleteDraftMmsMessage(Conversation conv) {
         mHasMmsDraft = false;
 
-        final long threadId = conv.getThreadId();
+        final long threadId = conv != null ? conv.getThreadId() : 0;
         // If the thread id is < 1, then the thread_id in the pdu will be "" or NULL. We have
         // to clear those messages as well as ones with a valid thread id.
         final String where = Mms.THREAD_ID +  (threadId > 0 ? " = " + threadId : " IS NULL");
