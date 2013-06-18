@@ -135,6 +135,11 @@ public class MmsActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mComposeMessageFragment.onActivityResult(requestCode, resultCode, data);
+    }
+
     /**
      * If emojis are enabled we will show the emoji dialog, otherwise show the smiley dialog
      * @param v
