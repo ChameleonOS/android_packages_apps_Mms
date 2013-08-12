@@ -961,6 +961,7 @@ public class MessagingNotification {
             .setContentIntent(
                     taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT))
             .addKind(Notification.KIND_MESSAGE)
+            .setNumber(messageCount)
             .setPriority(Notification.PRIORITY_DEFAULT);     // TODO: set based on contact coming
                                                              // from a favorite.
 
