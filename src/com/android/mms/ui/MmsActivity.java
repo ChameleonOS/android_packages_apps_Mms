@@ -42,6 +42,7 @@ public class MmsActivity extends Activity {
         mSlidingPane = (SlidingPaneLayout)findViewById(R.id.slidingpanelayout);
         Resources res = getResources();
         int parallax = res.getDimensionPixelSize(R.dimen.pane_parallax);
+        mSlidingPane.setShadowResource(R.drawable.panel_shadow_holo_dark);
         mSlidingPane.setParallaxDistance(parallax);
         mSlidingPane.setSliderFadeColor(res.getColor(R.color.slider_fade_color));
         mSlidingPane.setCoveredFadeColor(res.getColor(R.color.covered_fade_color));
