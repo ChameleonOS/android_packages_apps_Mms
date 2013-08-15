@@ -104,6 +104,7 @@ import android.view.View.OnCreateContextMenuListener;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
@@ -319,6 +320,8 @@ public class ComposeMessageFragment extends MmsBaseFragment
     private RecipientsEditor mRecipientsEditor;  // UI control for editing recipients
     private ImageButton mRecipientsPicker;       // UI control for recipients picker
 
+    private SlidingUpPanelLayout mSlidingPanel; // vertical sliding panel for emoji
+
     // For HW keyboard, 'mIsKeyboardOpen' indicates if the HW keyboard is open.
     // For SW keyboard, 'mIsKeyboardOpen' should always be true.
     private boolean mIsKeyboardOpen;
@@ -337,8 +340,6 @@ public class ComposeMessageFragment extends MmsBaseFragment
     private WorkingMessage mWorkingMessage;         // The message currently being composed.
 
     private AlertDialog mSmileyDialog;
-    private AlertDialog mEmojiDialog;
-    private View mEmojiView;
 
     private boolean mWaitingForSubActivity;
     private int mLastRecipientCount;            // Used for warning the user on too many recipients.
@@ -1925,6 +1926,8 @@ public class ComposeMessageFragment extends MmsBaseFragment
         setHasOptionsMenu(isActive);
         if (isActive)
             updateTitle();
+        else
+            mSlidingPanel.collapsePane();
     }
 
     public void  updateTitle() {
@@ -2109,6 +2112,13 @@ public class ComposeMessageFragment extends MmsBaseFragment
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         mMainLayout = gestureOverlayView;
+
+        initEmojiView(mMainLayout);
+        mSlidingPanel = (SlidingUpPanelLayout) mMainLayout.findViewById(R.id.sliding_panel);
+        final View dragView = mMainLayout.findViewById(R.id.insert_smiley);
+        mSlidingPanel.setDragView(dragView);
+        mSlidingPanel.setShadowDrawable(R.drawable.vertical_panel_shadow_holo_dark);
+        //slidingPanel.setPanelSlideListener(this);
 
         return gestureOverlayView;
     }
@@ -2688,6 +2698,8 @@ public class ComposeMessageFragment extends MmsBaseFragment
         mIsRunning = true;
         updateThreadIdIfRunning();
         mConversation.markAsRead(true);
+        if (mMainLayout != null)
+            initEmojiView(mMainLayout);
     }
 
     @Override
@@ -3092,12 +3104,6 @@ public class ComposeMessageFragment extends MmsBaseFragment
         if (!mWorkingMessage.hasSlideshow()) {
             menu.add(0, MENU_INSERT_SMILEY, 0, R.string.menu_insert_smiley).setIcon(
                     R.drawable.ic_menu_emoticons);
-            SharedPreferences prefs = PreferenceManager
-                    .getDefaultSharedPreferences((Context) getActivity());
-            boolean enableEmojis = prefs.getBoolean(MessagingPreferenceActivity.ENABLE_EMOJIS, false);
-            if (enableEmojis) {
-                menu.add(0, MENU_INSERT_EMOJI, 0, R.string.menu_insert_emoji);
-            }
         }
 
         if (getRecipients().size() > 1) {
@@ -3199,7 +3205,7 @@ public class ComposeMessageFragment extends MmsBaseFragment
                 showSmileyDialog();
                 break;
             case MENU_INSERT_EMOJI:
-                showEmojiDialog();
+                showSmileyDialog();
                 break;
             case MENU_GROUP_PARTICIPANTS: {
                 Intent intent = new Intent(getActivity(), RecipientListActivity.class);
@@ -3830,6 +3836,7 @@ public class ComposeMessageFragment extends MmsBaseFragment
     public void onClick(View v) {
         if ((v == mSendButtonSms || v == mSendButtonMms) && isPreparedForSending()) {
             confirmSendMessageIfNeeded();
+            mSlidingPanel.collapsePane();
         } else if ((v == mRecipientsPicker)) {
             launchMultiplePhonePicker();
         }
@@ -3996,6 +4003,15 @@ public class ComposeMessageFragment extends MmsBaseFragment
         mAttachmentEditor = (AttachmentEditor) mMainLayout.findViewById(R.id.attachment_editor);
         mAttachmentEditor.setHandler(mAttachmentEditorHandler);
         mAttachmentEditorScrollView = mMainLayout.findViewById(R.id.attachment_editor_scroll_view);
+
+        // Adjust the vertical panel collapsed height when mTextEditor changes size
+        ViewTreeObserver observer = mTextEditor.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mSlidingPanel.setPanelHeight(((View) mTextEditor.getParent()).getHeight());
+            }
+        });
     }
 
     private void confirmDeleteDialog(OnClickListener listener, boolean locked) {
@@ -4817,99 +4833,75 @@ public class ComposeMessageFragment extends MmsBaseFragment
         mSmileyDialog.show();
     }
 
-    private void showEmojiDialog() {
-        if (mEmojiDialog == null) {
+    private void initEmojiView(View parent) {
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences((Context) getActivity());
+        boolean enableEmojis = prefs.getBoolean(MessagingPreferenceActivity.ENABLE_EMOJIS, false);
+        if (enableEmojis) {
             int[] icons = EmojiParser.DEFAULT_EMOJI_RES_IDS;
-
-            int layout = R.layout.emoji_insert_view;
-            mEmojiView = getActivity().getLayoutInflater().inflate(layout, null);
-
-            final GridView gridView = (GridView) mEmojiView.findViewById(R.id.emoji_grid_view);
+            final GridView gridView = (GridView) parent.findViewById(R.id.emoji_grid_view);
             gridView.setAdapter(new ImageAdapter(getActivity(), icons));
-            final EditText editText = (EditText) mEmojiView.findViewById(R.id.emoji_edit_text);
-            final Button button = (Button) mEmojiView.findViewById(R.id.emoji_button);
 
             gridView.setOnItemClickListener(new OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                     // We use the new unified Unicode 6.1 emoji code points
                     CharSequence emoji = EmojiParser.getInstance().addEmojiSpans(EmojiParser.mEmojiTexts[position]);
-                    editText.append(emoji);
+                    // insert the emoji at the cursor location or replace selected
+                    int start = mTextEditor.getSelectionStart();
+                    int end = mTextEditor.getSelectionEnd();
+                    mTextEditor.getText().replace(Math.min(start, end), Math.max(start, end),
+                            emoji);
                 }
             });
+        } else {
+            int[] icons = SmileyParser.DEFAULT_SMILEY_RES_IDS;
+            String[] names = getResources().getStringArray(
+                    SmileyParser.DEFAULT_SMILEY_NAMES);
+            final String[] texts = getResources().getStringArray(
+                    SmileyParser.DEFAULT_SMILEY_TEXTS);
 
-            gridView.setOnItemLongClickListener(new OnItemLongClickListener() {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
-                        long id) {
-                    // We use the new unified Unicode 6.1 emoji code points
-                    CharSequence emoji = EmojiParser.getInstance().addEmojiSpans(EmojiParser.mEmojiTexts[position]);
+            final int N = names.length;
+
+            final List<Map<String, ?>> entries = new ArrayList<Map<String, ?>>();
+            for (int i = 0; i < N; i++) {
+                // We might have different ASCII for the same icon, skip it if
+                // the icon is already added.
+                boolean added = false;
+                for (int j = 0; j < i; j++) {
+                    if (icons[i] == icons[j]) {
+                        added = true;
+                        break;
+                    }
+                }
+                if (!added) {
+                    HashMap<String, Object> entry = new HashMap<String, Object>();
+
+                    entry.put("icon", icons[i]);
+                    entry.put("name", names[i]);
+                    entry.put("text", texts[i]);
+
+                    entries.add(entry);
+                }
+            }
+            final GridView gridView = (GridView) parent.findViewById(R.id.emoji_grid_view);
+            gridView.setAdapter(new ImageAdapter(getActivity(), icons));
+
+            gridView.setOnItemClickListener(new OnItemClickListener() {
+                public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                    HashMap<String, Object> item = (HashMap<String, Object>) entries.get(position);
                     EditText mToInsert;
 
-                    // tag edit text to insert to
-                    if (mSubjectTextEditor != null && mSubjectTextEditor.hasFocus()) {
-                        mToInsert = mSubjectTextEditor;
-                    } else {
-                        mToInsert = mTextEditor;
-                    }
+                    String smiley = (String)item.get("text");
                     // insert the emoji at the cursor location or replace selected
-                    int start = mToInsert.getSelectionStart();
-                    int end = mToInsert.getSelectionEnd();
-                    mToInsert.getText().replace(Math.min(start, end), Math.max(start, end), emoji);
-
-                    mEmojiDialog.dismiss();
-                    return true;
+                    int start = mTextEditor.getSelectionStart();
+                    int end = mTextEditor.getSelectionEnd();
+                    // Insert the smiley text at current cursor position in editText
+                    // math funcs deal with text selected in either direction
+                    //
+                    mTextEditor.getText().replace(Math.min(start, end), Math.max(start, end), smiley);
                 }
             });
-
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                     EditText mToInsert;
-
-                    // tag edit text to insert to
-                    if (mSubjectTextEditor != null && mSubjectTextEditor.hasFocus()) {
-                        mToInsert = mSubjectTextEditor;
-                    } else {
-                        mToInsert = mTextEditor;
-                    }
-                    // insert the emoji at the cursor location or replace selected
-                    int start = mToInsert.getSelectionStart();
-                    int end = mToInsert.getSelectionEnd();
-                    mToInsert.getText().replace(Math.min(start, end), Math.max(start, end),
-                            editText.getText());
-
-                    mEmojiDialog.dismiss();
-                }
-            });
-
-            AlertDialog.Builder b = new AlertDialog.Builder(getActivity());
-
-            b.setTitle(getString(R.string.menu_insert_emoji));
-
-            b.setCancelable(true);
-            b.setView(mEmojiView);
-
-            mEmojiDialog = b.create();
         }
-
-        final EditText editText = (EditText) mEmojiView.findViewById(R.id.emoji_edit_text);
-        editText.setText("");
-
-        mEmojiDialog.show();
-    }
-
-    /**
-     * If emojis are enabled we will show the emoji dialog, otherwise show the smiley dialog
-     * @param v
-     */
-    public void insertEmoji(View v) {
-        SharedPreferences prefs = PreferenceManager
-                .getDefaultSharedPreferences((Context) getActivity());
-        boolean enableEmojis = prefs.getBoolean(MessagingPreferenceActivity.ENABLE_EMOJIS, false);
-        if (enableEmojis)
-            showEmojiDialog();
-        else
-            showSmileyDialog();
     }
 
     @Override

@@ -141,14 +141,6 @@ public class MmsActivity extends Activity {
         mComposeMessageFragment.onActivityResult(requestCode, resultCode, data);
     }
 
-    /**
-     * If emojis are enabled we will show the emoji dialog, otherwise show the smiley dialog
-     * @param v
-     */
-    public void insertEmoji(View v) {
-        mComposeMessageFragment.insertEmoji(v);
-    }
-
     public static Intent createIntent(Context context, long threadId) {
         Intent intent = new Intent(context, MmsActivity.class);
 
