@@ -174,6 +174,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.chameleonos.support.widget.SlidingUpPanelLayout;
+
 import static android.content.res.Configuration.KEYBOARDHIDDEN_NO;
 import static com.android.mms.transaction.ProgressCallbackEntity.PROGRESS_ABORT;
 import static com.android.mms.transaction.ProgressCallbackEntity.PROGRESS_COMPLETE;

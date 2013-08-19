@@ -21,6 +21,7 @@ LOCAL_JAVA_LIBRARIES += telephony-common mms-common
 LOCAL_STATIC_JAVA_LIBRARIES += android-common jsr305
 LOCAL_STATIC_JAVA_LIBRARIES += android-common-chips
 LOCAL_STATIC_JAVA_LIBRARIES += android-support-v4
+LOCAL_STATIC_JAVA_LIBRARIES += org.chameleonos.support
 
 LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, $(res_dirs))
 LOCAL_AAPT_FLAGS := --auto-add-overlay

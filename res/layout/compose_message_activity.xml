@@ -18,7 +18,7 @@
  */
 -->
 
-<com.android.mms.ui.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.chameleonos.support.widget.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/sliding_panel"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -225,4 +225,4 @@
             android:columnWidth="50dip" />
 
     </LinearLayout>
-</com.android.mms.ui.SlidingUpPanelLayout>
+</org.chameleonos.support.widget.SlidingUpPanelLayout>
