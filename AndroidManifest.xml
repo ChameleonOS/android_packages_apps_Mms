@@ -20,10 +20,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.android.mms">
 
-    <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="16" />
-
     <original-package android:name="com.android.mms" />
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -46,6 +42,13 @@
     <uses-permission android:name="android.permission.INSTALL_DRM" />
     <uses-permission android:name="android.permission.WRITE_APN_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
+    <!-- System apps can access the  receiver through intent-->
+    <permission android:name="android.permission.MMS_SEND_OUTBOX_MSG"
+                android:protectionLevel="signatureOrSystem"
+                android:label="@string/label_mms_send_outbox_msg"
+                android:description="@string/desc_mms_send_outbox_msg"/>
+    <uses-permission android:name="android.permission.MMS_SEND_OUTBOX_MSG"/>
 
     <!-- Needed for QuickMessage -->
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
@@ -72,6 +75,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.APP_MESSAGING" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -194,11 +198,16 @@
         <receiver android:name=".transaction.PushReceiver"
             android:permission="android.permission.BROADCAST_WAP_PUSH">
             <intent-filter>
-                <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
+                <action android:name="android.provider.Telephony.WAP_PUSH_DELIVER" />
                 <data android:mimeType="application/vnd.wap.mms-message" />
             </intent-filter>
         </receiver>
-
+     <receiver android:name=".transaction.MmsPushOutboxMessages"
+            android:permission="android.permission.MMS_SEND_OUTBOX_MSG">
+            <intent-filter>
+                <action android:name="android.intent.action.MMS_SEND_OUTBOX_MSG" />
+            </intent-filter>
+        </receiver>
         <receiver android:name=".transaction.MmsSystemEventReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.CONTENT_CHANGED" />
@@ -222,7 +231,7 @@
         <receiver android:name=".transaction.PrivilegedSmsReceiver"
             android:permission="android.permission.BROADCAST_SMS">
             <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+                <action android:name="android.provider.Telephony.SMS_DELIVER" />
             </intent-filter>
         </receiver>
 
@@ -298,10 +307,10 @@
         </provider>
 
         <service android:name=".ui.NoConfirmationSendService"
-                 android:permission="android.permission.SEND_SMS_NO_CONFIRMATION"
+                 android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE"
                  android:exported="true" >
             <intent-filter>
-                <action android:name="com.android.mms.intent.action.SENDTO_NO_CONFIRMATION" />
+                <action android:name="android.intent.action.RESPOND_VIA_MESSAGE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="sms" />
                 <data android:scheme="smsto" />
